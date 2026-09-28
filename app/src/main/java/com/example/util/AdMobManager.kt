@@ -30,9 +30,18 @@ object AdMobManager {
     private var isRewardedLoading: Boolean = false
 
     fun initialize(context: Context) {
-        MobileAds.initialize(context) {}
-        loadInterstitial(context)
-        loadRewarded(context)
+        val appContext = context.applicationContext
+        Thread {
+            try {
+                MobileAds.initialize(appContext) { status ->
+                    // Ads SDK initialization complete
+                }
+                loadInterstitial(appContext)
+                loadRewarded(appContext)
+            } catch (e: Throwable) {
+                // Graceful fallback if adservices or Google Play Services is unavailable
+            }
+        }.start()
     }
 
     // ----------------- INTERSTITIAL ADS -----------------
@@ -146,7 +155,16 @@ fun AdMobBannerView(modifier: Modifier = Modifier) {
             AdView(context).apply {
                 setAdSize(AdSize.BANNER)
                 adUnitId = AdMobManager.BANNER_AD_UNIT_ID
-                loadAd(AdRequest.Builder().build())
+                adListener = object : AdListener() {
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        // Handled silently
+                    }
+                }
+                try {
+                    loadAd(AdRequest.Builder().build())
+                } catch (e: Throwable) {
+                    // Ignore loading errors on devices without Google Play Services
+                }
             }
         }
     )
