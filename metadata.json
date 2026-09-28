@@ -1,0 +1,6 @@
+{
+  "name": "OmniTool",
+  "description": "Complete multi-tool suite with Wedding Card Maker, Reels & Video Studio, Background Eraser, Doc Scanner & OCR, Photo Filter Editor, Invoice Maker, Weather Forecast, Task Timeline, URL Shortener, and Currency Calculator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
